@@ -33,6 +33,24 @@ def test_valid_ais_vessel_record():
     assert record.is_in_moroccan_geofence is True
 
 
+def test_to_supabase_dict():
+    record = AISVesselRecord(
+        mmsi="228389000",
+        vessel_name="CMA CGM JACQUES SAADE",
+        latitude=35.8900,
+        longitude=-5.4800,
+        speed_knots=18.5,
+        timestamp_utc=datetime(2026, 8, 25, 20, 0, 0, tzinfo=timezone.utc),
+    )
+
+    d = record.to_supabase_dict()
+    assert isinstance(d, dict)
+    assert d["mmsi"] == "228389000"
+    assert d["vessel_name"] == "CMA CGM JACQUES SAADE"
+    assert isinstance(d["timestamp_utc"], str)
+    assert "2026-08-25T20:00:00" in d["timestamp_utc"]
+
+
 def test_invalid_coordinates_latitude():
     with pytest.raises(ValidationError):
         AISVesselRecord(

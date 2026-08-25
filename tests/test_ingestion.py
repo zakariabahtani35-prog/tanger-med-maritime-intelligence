@@ -1,13 +1,13 @@
 import asyncio
+from datetime import datetime, timezone
 import pytest
 from database import db_manager
 from ingestion_service import AISIngestionService
 from models import AISVesselRecord
-from datetime import datetime, timezone
 
 
 @pytest.mark.asyncio
-async def test_database_bulk_insert_dry_run():
+async def test_supabase_bulk_insert_dry_run():
     records = [
         AISVesselRecord(
             mmsi="228389000",

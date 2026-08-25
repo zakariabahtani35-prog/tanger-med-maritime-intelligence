@@ -1,5 +1,4 @@
-import os
-from typing import NamedTuple, List
+from typing import NamedTuple, List, Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -36,7 +35,7 @@ GEOFENCES: List[BoundingBox] = [
 class Settings(BaseSettings):
     """
     Application Settings for Morocco Maritime Telemetry Ingestion Pipeline.
-    Supports .env file loading and environment variable overrides.
+    Operates natively via Supabase Python SDK.
     """
 
     model_config = SettingsConfigDict(
@@ -46,10 +45,11 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
-    # Warehouse Connection Settings
-    database_url: str = "postgresql://postgres:postgres@localhost:5432/morocco_maritime"
-    db_min_pool_size: int = 2
-    db_max_pool_size: int = 10
+    # Supabase Connection Settings
+    supabase_url: str = "https://syaigxflutyefwszxpsr.supabase.co"
+    supabase_service_role_key: Optional[str] = None
+    supabase_key: Optional[str] = None  # Fallback anon or service key
+    target_table: str = "stg_vessel_ais_raw"
 
     # Batch Ingestion Parameters
     batch_size: int = 100
@@ -58,7 +58,7 @@ class Settings(BaseSettings):
     # Ingestion Source Mode
     simulation_mode: bool = True
     ais_websocket_url: str = "wss://stream.aisstream.io/v0/stream"
-    ais_api_key: str | None = None
+    ais_api_key: Optional[str] = None
 
     # Geofence Filtering Settings
     strict_geofence_check: bool = True
@@ -68,6 +68,10 @@ class Settings(BaseSettings):
 
     # Structured Logging Level
     log_level: str = "INFO"
+
+    @property
+    def effective_supabase_key(self) -> Optional[str]:
+        return self.supabase_service_role_key or self.supabase_key
 
     @property
     def is_in_moroccan_waters(self) -> callable:

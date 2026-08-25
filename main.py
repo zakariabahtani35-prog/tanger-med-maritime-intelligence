@@ -40,16 +40,16 @@ async def main():
     logger = structlog.get_logger(__name__)
 
     logger.info(
-        "Starting Morocco Maritime & Port Supply Chain Intelligence Ingestion Engine",
-        target_table="staging.stg_vessel_ais_raw",
+        "Starting Morocco Maritime Telemetry Ingestion Pipeline (Supabase REST Native)",
+        supabase_url=settings.supabase_url,
+        target_table=settings.target_table,
         simulation_mode=settings.simulation_mode,
         batch_size=settings.batch_size,
         flush_interval=settings.flush_interval_seconds,
     )
 
-    # 1. Initialize Database Manager & Schema
-    await db_manager.init_pool()
-    await db_manager.init_schema("schema.sql")
+    # 1. Initialize Supabase Database Manager
+    await db_manager.init_client()
 
     # 2. Initialize Ingestion Service
     ingestion_service = AISIngestionService()
@@ -70,7 +70,7 @@ async def main():
             # Signal handling on Windows/non-POSIX platforms fallback
             pass
 
-    logger.info("Pipeline pipeline actively running. Press Ctrl+C to terminate.")
+    logger.info("Pipeline actively running. Press Ctrl+C to terminate.")
 
     # Wait until shutdown signal is received
     try:
@@ -82,8 +82,8 @@ async def main():
         # 3. Stop Ingestion Service (Flushes remaining queue)
         await ingestion_service.stop()
 
-        # 4. Close Database Pool
-        await db_manager.close_pool()
+        # 4. Close Supabase Client
+        await db_manager.close_client()
         logger.info("Shutdown sequence completed cleanly. Exiting.")
 
 

@@ -1,15 +1,12 @@
 -- Database Initialization Script for Morocco Maritime & Port Supply Chain Intelligence
--- Target Warehouse: PostgreSQL / Supabase with PostGIS
+-- Target Warehouse: Supabase / PostgreSQL + PostGIS
 
 -- 1. Enable PostGIS Extension if available
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "postgis";
 
--- 2. Create Staging Schema
-CREATE SCHEMA IF NOT EXISTS staging;
-
--- 3. Create Staging Table: staging.stg_vessel_ais_raw
-CREATE TABLE IF NOT EXISTS staging.stg_vessel_ais_raw (
+-- 2. Create Target Table in Public Schema (for Supabase REST API native access: public.stg_vessel_ais_raw)
+CREATE TABLE IF NOT EXISTS public.stg_vessel_ais_raw (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     mmsi VARCHAR(20) NOT NULL,
     imo VARCHAR(20),
@@ -27,13 +24,16 @@ CREATE TABLE IF NOT EXISTS staging.stg_vessel_ais_raw (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 3. Create Staging Schema & Table (Optional Alias for ELT pipelines)
+CREATE SCHEMA IF NOT EXISTS staging;
+CREATE TABLE IF NOT EXISTS staging.stg_vessel_ais_raw (LIKE public.stg_vessel_ais_raw INCLUDING ALL);
+
 -- 4. Create Indexes for Operational & Analytical Queries
-CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_mmsi ON staging.stg_vessel_ais_raw (mmsi);
-CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_timestamp ON staging.stg_vessel_ais_raw (timestamp_utc DESC);
-CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_vessel_type ON staging.stg_vessel_ais_raw (vessel_type);
-CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_mmsi_ts ON staging.stg_vessel_ais_raw (mmsi, timestamp_utc DESC);
+CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_mmsi ON public.stg_vessel_ais_raw (mmsi);
+CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_timestamp ON public.stg_vessel_ais_raw (timestamp_utc DESC);
+CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_vessel_type ON public.stg_vessel_ais_raw (vessel_type);
+CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_mmsi_ts ON public.stg_vessel_ais_raw (mmsi, timestamp_utc DESC);
 
 -- 5. PostGIS Spatial Index (EPSG:4326 WGS 84)
--- Note: Geometry column generated dynamically or computed via spatial index expression
-CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_geom ON staging.stg_vessel_ais_raw 
+CREATE INDEX IF NOT EXISTS idx_stg_vessel_ais_geom ON public.stg_vessel_ais_raw 
 USING GIST (ST_SetSRID(ST_MakePoint(longitude, latitude), 4326));

@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, timezone
-from typing import Optional
-from pydantic import BaseModel, Field, field_validator, model_validator
+from typing import Optional, Dict, Any
+from pydantic import BaseModel, Field, field_validator
 from config import settings
 
 
@@ -47,7 +47,7 @@ NAV_STATUS_MAP = {
 
 class AISVesselRecord(BaseModel):
     """
-    Validated & Normalized AIS Vessel Record targeting staging.stg_vessel_ais_raw
+    Validated & Normalized AIS Vessel Record targeting Supabase stg_vessel_ais_raw table.
     """
 
     mmsi: str = Field(..., description="Maritime Mobile Service Identity (9 digits)")
@@ -177,3 +177,24 @@ class AISVesselRecord(BaseModel):
     def is_in_moroccan_geofence(self) -> bool:
         """Returns True if vessel telemetry lies within targeted Moroccan waters."""
         return settings.is_in_moroccan_waters(self.latitude, self.longitude)
+
+    def to_supabase_dict(self) -> Dict[str, Any]:
+        """
+        Dumps dictionary formatted for Supabase REST API insert operations.
+        Converts datetime fields to ISO-8601 strings.
+        """
+        return {
+            "mmsi": self.mmsi,
+            "imo": self.imo,
+            "vessel_name": self.vessel_name,
+            "vessel_type": self.vessel_type,
+            "flag_country": self.flag_country,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "speed_knots": self.speed_knots,
+            "heading": self.heading,
+            "nav_status": self.nav_status,
+            "destination": self.destination,
+            "eta": self.eta.isoformat() if self.eta else None,
+            "timestamp_utc": self.timestamp_utc.isoformat(),
+        }
