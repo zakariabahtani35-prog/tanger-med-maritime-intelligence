@@ -1,5 +1,20 @@
+import os
+from pathlib import Path
 from typing import NamedTuple, List, Optional
+from dotenv import load_dotenv, find_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import structlog
+
+logger = structlog.get_logger(__name__)
+
+# Explicitly discover and load .env file from project root
+env_file_path = find_dotenv(usecwd=True)
+if env_file_path:
+    load_dotenv(env_file_path, override=True)
+else:
+    root_env = Path(__file__).resolve().parent / ".env"
+    if root_env.exists():
+        load_dotenv(root_env, override=True)
 
 
 class BoundingBox(NamedTuple):
@@ -35,7 +50,7 @@ GEOFENCES: List[BoundingBox] = [
 class Settings(BaseSettings):
     """
     Application Settings for Morocco Maritime Telemetry Ingestion Pipeline.
-    Operates natively via Supabase Python SDK.
+    Operates strictly via Supabase Python SDK and PostgreSQL tables.
     """
 
     model_config = SettingsConfigDict(
@@ -56,7 +71,7 @@ class Settings(BaseSettings):
     flush_interval_seconds: float = 5.0
 
     # Ingestion Source Mode
-    simulation_mode: bool = True
+    simulation_mode: bool = False
     ais_websocket_url: str = "wss://stream.aisstream.io/v0/stream"
     ais_api_key: Optional[str] = None
 
@@ -71,7 +86,37 @@ class Settings(BaseSettings):
 
     @property
     def effective_supabase_key(self) -> Optional[str]:
-        return self.supabase_service_role_key or self.supabase_key
+        key = self.supabase_service_role_key or self.supabase_key
+        if key:
+            key = key.strip()
+        return key
+
+    def validate_strict_production_config(self) -> None:
+        """
+        Validates environment configuration under strict Supabase production mode.
+        If SUPABASE_SERVICE_ROLE_KEY or SUPABASE_KEY is missing, empty, or set to placeholder,
+        logs a FATAL error and raises RuntimeError immediately.
+        """
+        key = self.effective_supabase_key
+        placeholders = {
+            "your_service_role_key_here",
+            "your_anon_key_here",
+            "your_service_role_key",
+            "your_anon_or_service_key_here",
+            "your-supabase-service-role-key-here",
+            "your-supabase-anon-key-here",
+            "",
+            "none",
+        }
+        if not key or key.lower() in placeholders:
+            msg = (
+                "FATAL ERROR: Strict Supabase production mode is active, but valid "
+                "SUPABASE_SERVICE_ROLE_KEY or SUPABASE_KEY was not found in .env. "
+                "The system MUST NOT silently fall back to mock in-memory stores. "
+                "Please configure a valid Supabase key in your .env file."
+            )
+            logger.critical("STRICT_SUPABASE_ENV_FAILURE", error=msg)
+            raise RuntimeError(msg)
 
     @property
     def is_in_moroccan_waters(self) -> callable:

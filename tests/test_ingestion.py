@@ -8,6 +8,9 @@ from models import AISVesselRecord
 
 @pytest.mark.asyncio
 async def test_supabase_bulk_insert_dry_run():
+    if not db_manager.is_connected:
+        await db_manager.init_client()
+
     records = [
         AISVesselRecord(
             mmsi="228389000",
@@ -33,6 +36,9 @@ async def test_supabase_bulk_insert_dry_run():
 
 @pytest.mark.asyncio
 async def test_ingestion_service_lifecycle():
+    if not db_manager.is_connected:
+        await db_manager.init_client()
+
     service = AISIngestionService()
     await service.start()
 
@@ -43,3 +49,4 @@ async def test_ingestion_service_lifecycle():
 
     await service.stop()
     assert service.is_running is False
+

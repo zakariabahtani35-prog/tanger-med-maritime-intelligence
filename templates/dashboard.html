@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/bytecrafters-by.svg">
+    <link rel="alternate icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/favicon.png">
+
+    <!-- Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Lucide / Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* BY BRAND VISUAL IDENTITY TOKENS */
+            --bg-body: #FEFEFE;
+            --bg-sidebar: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --border-color: rgba(1, 1, 1, 0.08);
+            --border-subtle: rgba(1, 1, 1, 0.04);
+
+            --text-primary: #010101;
+            --text-secondary: #6B6B6B;
+            --text-muted: #8E8E93;
+
+            --primary-black: #010101;
+            --primary-hover: #9E261A;
+            --brand-red: #9E261A;
+
+            --badge-green-bg: #E6F4EA;
+            --badge-green-text: #137333;
+            --badge-amber-bg: #FEF3C7;
+            --badge-amber-text: #92400E;
+            --badge-red-bg: #FCE8E6;
+            --badge-red-text: #9E261A;
+            --badge-slate-bg: #F1F4F9;
+            --badge-slate-text: #010101;
+
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-card: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* -------------------------------------------------------------
+           LEFT SIDEBAR (SHADCN UI KIT EXACT MATCH)
+        ------------------------------------------------------------- */
+        aside.sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 1.25rem 1rem;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 180px);
+            padding-right: 4px;
+        }
+
+        /* Custom Scrollbar for sidebar */
+        .sidebar-top::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-top::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            padding: 0.25rem 0.5rem;
+        }
+
+        .sidebar-brand-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-black);
+            color: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-brand-text {
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: -0.01rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05rem;
+            padding: 0.25rem 0.5rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .nav-item-left i {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-item a:hover {
+            background: var(--bg-body);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active a {
+            background: #F1F5F9;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .nav-item.active a i {
+            color: var(--primary-black);
+        }
+
+        .badge-pill-nav {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            background: #F1F5F9;
+            color: var(--text-secondary);
+        }
+
+        .badge-pill-nav.green {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-promo-card {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-promo-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .sidebar-promo-desc {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            line-height: 1.35;
+        }
+
+        .btn-promo {
+            background: var(--primary-black);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.15s ease;
+        }
+
+        .btn-promo:hover {
+            background: var(--primary-hover);
+        }
+
+        .sidebar-user-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .user-avatar-group {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .user-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .user-email {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+        }
+
+        /* -------------------------------------------------------------
+           MAIN CONTENT AREA
+        ------------------------------------------------------------- */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* TOP HEADER BAR */
+        header.top-header {
+            height: 64px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            width: 320px;
+        }
+
+        .search-container i {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .search-container input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.82rem;
+            width: 100%;
+            color: var(--text-primary);
+        }
+
+        .search-container input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .kbd-badge {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.1rem 0.35rem;
+            color: var(--text-muted);
+        }
+
+        .top-header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--brand-black);
+            font-size: 1.15rem;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            color: var(--brand-red);
+        }
+
+        .icon-btn .badge-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--brand-red);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .header-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--brand-black);
+            color: var(--brand-white);
+            border: 1.5px solid var(--brand-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .header-avatar:hover {
+            background: var(--brand-red);
+            border-color: var(--brand-red);
+        }
+
+        /* PAGE BODY */
+        .page-content {
+            padding: 1.75rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* PAGE TITLE & ACTION BAR */
+        .title-action-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02rem;
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .date-range-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .date-range-pill i {
+            color: var(--text-secondary);
+        }
+
+        .btn-download-main {
+            background: var(--primary-black);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            text-decoration: none;
+        }
+
+        .btn-download-main:hover {
+            background: var(--primary-hover);
+        }
+
+        /* -------------------------------------------------------------
+           ROW 1: TOP 4 KPI CARDS (MATCHING IMAGE)
+        ------------------------------------------------------------- */
+        .kpi-row-grid {
+            display: grid;
+            grid-template-columns: 1.35fr 1fr 1fr 1.1fr;
+            gap: 1.25rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Card 1: Target / Stream Health */
+        .target-card-content {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            height: 100%;
+        }
+
+        .progress-circle-wrap {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+        }
+
+        .progress-circle-wrap svg {
+            width: 60px;
+            height: 60px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-wrap circle.bg {
+            fill: none;
+            stroke: #F1F5F9;
+            stroke-width: 6;
+        }
+
+        .progress-circle-wrap circle.fg {
+            fill: none;
+            stroke: var(--primary-black);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 163;
+            stroke-dashoffset: 8; /* ~95% */
+            transition: stroke-dashoffset 0.8s ease;
+        }
+
+        .progress-circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .target-text-group h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .target-text-group p {
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+            line-height: 1.35;
+        }
+
+        /* Generic KPI Content */
+        .kpi-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-label {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .kpi-icon-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .kpi-number-val {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.03rem;
+            margin-bottom: 0.35rem;
+            font-family: var(--font-main);
+        }
+
+        .kpi-trend-row {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: #16A34A;
+        }
+
+        .trend-down {
+            color: #DC2626;
+        }
+
+        .trend-subtext {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* -------------------------------------------------------------
+           ROW 2: MIDDLE 3 CARDS (MATCHING IMAGE)
+        ------------------------------------------------------------- */
+        .middle-row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.25fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .mid-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .mid-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .mid-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mid-card-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        .btn-card-action {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: background 0.15s ease;
+        }
+
+        .btn-card-action:hover {
+            background: #F8FAFC;
+        }
+
+        /* Card 1: Leads by Source / Donut Chart */
+        .donut-chart-container {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            margin: 0.5rem auto;
+        }
+
+        .donut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .donut-center-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .donut-center-label {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .donut-legend-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.85rem;
+            margin-top: 0.85rem;
+            gap: 0.5rem;
+        }
+
+        .legend-col-title {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.03rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .legend-col-count {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0.2rem;
+        }
+
+        /* Card 2: Tasks & Alerts */
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .task-item-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            background: #FFFFFF;
+            transition: background 0.15s ease;
+        }
+
+        .task-item-box:hover {
+            background: #F8FAFC;
+        }
+
+        .task-checkbox {
+            margin-top: 0.2rem;
+            accent-color: var(--primary-black);
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+        }
+
+        .task-info-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .task-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .task-desc {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        .task-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.15rem;
+        }
+
+        .priority-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .priority-badge.high { background: var(--badge-red-bg); color: var(--badge-red-text); }
+        .priority-badge.medium { background: var(--badge-amber-bg); color: var(--badge-amber-text); }
+        .priority-badge.low { background: var(--badge-green-bg); color: var(--badge-green-text); }
+
+        .task-due-text {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Card 3: Sales Pipeline / Corridor Pipeline */
+        .pipeline-segmented-bar {
+            height: 10px;
+            border-radius: 5px;
+            background: #E2E8F0;
+            display: flex;
+            overflow: hidden;
+            margin-bottom: 1.1rem;
+        }
+
+        .seg-1 { width: 38%; background: #010101; }
+        .seg-2 { width: 24%; background: #334155; }
+        .seg-3 { width: 18%; background: #64748B; }
+        .seg-4 { width: 12%; background: #94A3B8; }
+        .seg-5 { width: 8%; background: #CBD5E1; }
+
+        .pipeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .pipeline-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+        }
+
+        .pipeline-item-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            width: 140px;
+        }
+
+        .pipeline-item-left span.dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary-black);
+        }
+
+        .pipeline-progress-track {
+            flex: 1;
+            height: 6px;
+            background: #F1F5F9;
+            border-radius: 3px;
+            margin: 0 0.75rem;
+            overflow: hidden;
+        }
+
+        .pipeline-progress-fill {
+            height: 100%;
+            background: var(--primary-black);
+            border-radius: 3px;
+        }
+
+        .pipeline-pct-val {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            width: 32px;
+            text-align: right;
+        }
+
+        /* -------------------------------------------------------------
+           AI / ML MARITIME INFERENCE & ANOMALY RADAR STYLES
+        ------------------------------------------------------------- */
+        .ai-insights-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 1024px) {
+            .ai-insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ai-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #010101, #9E261A);
+        }
+
+        .ai-badge-pulse {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.2rem 0.6rem;
+            background: #FCE8E6;
+            color: #9E261A;
+            border: 1px solid rgba(158, 38, 26, 0.2);
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02rem;
+        }
+
+        .ai-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #9E261A;
+            box-shadow: 0 0 0 0 rgba(158, 38, 26, 0.7);
+            animation: pulseRed 1.8s infinite;
+        }
+
+        @keyframes pulseRed {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(158, 38, 26, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(158, 38, 26, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(158, 38, 26, 0);
+            }
+        }
+
+        @keyframes pulseBlue {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 7px rgba(37, 99, 235, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+
+        .ai-kpi-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .ai-sub-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.03rem;
+            margin-bottom: 2px;
+        }
+
+        .ai-big-val {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+
+        .ai-anomaly-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        .ai-anomaly-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.65rem;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 6px;
+            font-size: 0.78rem;
+        }
+
+        .ai-anomaly-item .v-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ai-anomaly-score-tag {
+            background: #EF4444;
+            color: #FFFFFF;
+            font-weight: 700;
+            font-size: 0.68rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+        }
+
+        .ai-dwell-compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+        }
+
+        .ai-dwell-box {
+            padding: 0.85rem;
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .ai-dwell-port {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .ai-dwell-hours {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+
+        .ai-dwell-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        @keyframes redPulseAura {
+            0% {
+                filter: drop-shadow(0 0 6px #EF4444);
+            }
+            50% {
+                filter: drop-shadow(0 0 16px #EF4444) drop-shadow(0 0 24px rgba(239, 68, 68, 0.6));
+            }
+            100% {
+                filter: drop-shadow(0 0 6px #EF4444);
+            }
+        }
+
+        .vessel-anomaly-pulse {
+            animation: redPulseAura 1.4s infinite ease-in-out;
+        }
+
+        .badge-pill-anomaly {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.55rem;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        .badge-pill-anomaly.alert {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+
+        .badge-pill-anomaly.normal {
+            background: #F1F5F9;
+            color: #475569;
+        }
+
+        /* -------------------------------------------------------------
+           INTERACTIVE GEOSPATIAL RADAR MAP (INTEGRATED)
+        ------------------------------------------------------------- */
+        .map-section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .map-section-header {
+            padding: 1rem 1.35rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #FFFFFF;
+        }
+
+        .map-region-btn-group {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .btn-region-pill {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-region-pill:hover, .btn-region-pill.active {
+            background: var(--primary-black);
+            color: #FFFFFF;
+            border-color: var(--primary-black);
+        }
+
+        #map {
+            width: 100%;
+            height: 420px;
+            min-height: 400px;
+            display: block;
+            background: #0B0F19;
+            position: relative;
+            z-index: 1;
+        }
+
+        .leaflet-container {
+            width: 100% !important;
+            height: 100% !important;
+            background-color: #0B0F19 !important;
+            font-family: var(--font-main) !important;
+        }
+
+        .leaflet-popup-content-wrapper {
+            background: #FFFFFF !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .leaflet-popup-tip {
+            background: #FFFFFF !important;
+        }
+
+        /* -------------------------------------------------------------
+           ROW 3: BOTTOM LEADS / AIS TELEMETRY TABLE (MATCHING IMAGE)
+        ------------------------------------------------------------- */
+        .table-section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .table-toolbar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-input-box {
+            width: 280px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.82rem;
+            outline: none;
+            color: var(--text-primary);
+        }
+
+        .filter-input-box::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn-columns-dropdown {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table.shadcn-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+
+        table.shadcn-table th {
+            padding: 0.65rem 0.85rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table.shadcn-table td {
+            padding: 0.75rem 0.85rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+        }
+
+        table.shadcn-table tr:hover td {
+            background: #F8FAFC;
+        }
+
+        .status-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.55rem;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .status-badge-pill.success {
+            background: var(--badge-green-bg);
+            color: var(--badge-green-text);
+        }
+
+        .status-badge-pill.warning {
+            background: var(--badge-amber-bg);
+            color: var(--badge-amber-text);
+        }
+
+        .status-badge-pill.neutral {
+            background: var(--badge-slate-bg);
+            color: var(--badge-slate-text);
+        }
+
+        .mono-cell {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+        }
+
+        .btn-row-action {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .btn-row-action:hover {
+            background: #E2E8F0;
+            color: var(--text-primary);
+        }
+
+        /* -------------------------------------------------------------
+           RESPONSIVE BREAKPOINTS
+        ------------------------------------------------------------- */
+        @media (max-width: 1280px) {
+            .kpi-row-grid { grid-template-columns: repeat(2, 1fr); }
+            .middle-row-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 900px) {
+            aside.sidebar { display: none; }
+            .kpi-row-grid { grid-template-columns: 1fr; }
+            .page-content { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- -------------------------------------------------------------
+         1. LEFT SIDEBAR (EXACT SHADCN UI KIT REPRODUCTION)
+    ------------------------------------------------------------- -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <!-- Brand Logo -->
+            <a href="/" class="sidebar-brand">
+                <div class="sidebar-brand-icon" style="background: transparent; padding: 0;">
+                    <img src="/assets/bytecrafters-by.svg" alt="BY Logo" style="height: 24px; width: auto; display: block;" />
+                </div>
+                <div class="sidebar-brand-text">Morocco Maritime</div>
+            </a>
+
+            <!-- Navigation: Dashboards -->
+            <div>
+                <div class="nav-section-title">Dashboards</div>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="/dashboard">
+                            <div class="nav-item-left">
+                                <i class="ri-dashboard-line"></i>
+                                <span>Overview</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="/dashboard">
+                            <div class="nav-item-left">
+                                <i class="ri-ship-line"></i>
+                                <span>Maritime CRM</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" onclick="zoomToRegion('tangermed')">
+                            <div class="nav-item-left">
+                                <i class="ri-anchor-line"></i>
+                                <span>Tanger Med Hub</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" onclick="zoomToRegion('casablanca')">
+                            <div class="nav-item-left">
+                                <i class="ri-building-line"></i>
+                                <span>Casablanca Port</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" onclick="zoomToRegion('gibraltar')">
+                            <div class="nav-item-left">
+                                <i class="ri-compass-3-line"></i>
+                                <span>Gibraltar TSS</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard">
+                            <div class="nav-item-left">
+                                <i class="ri-pie-chart-line"></i>
+                                <span>Fleet Analytics</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard">
+                            <div class="nav-item-left">
+                                <i class="ri-time-line"></i>
+                                <span>Port Dwell Index</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Navigation: Apps -->
+            <div>
+                <div class="nav-section-title">Apps</div>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#map-section">
+                            <div class="nav-item-left">
+                                <i class="ri-map-2-line"></i>
+                                <span>Geospatial Radar</span>
+                            </div>
+                            <span class="badge-pill-nav green">Live</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#ais-table-section">
+                            <div class="nav-item-left">
+                                <i class="ri-terminal-window-line"></i>
+                                <span>AIS Stream</span>
+                            </div>
+                            <span class="badge-pill-nav" id="sidebar-stream-count">50</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard">
+                            <div class="nav-item-left">
+                                <i class="ri-notification-3-line"></i>
+                                <span>Port Alerts</span>
+                            </div>
+                            <span class="badge-pill-nav">3</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/dashboard">
+                            <div class="nav-item-left">
+                                <i class="ri-git-branch-line"></i>
+                                <span>PostGIS Layers</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sidebar Bottom: Export Card & User Profile -->
+        <div class="sidebar-bottom">
+            <div class="sidebar-promo-card">
+                <div class="sidebar-promo-title">Export Dataset</div>
+                <div class="sidebar-promo-desc">Download verified WGS84 vessel trajectories and port dwell records.</div>
+                <a href="/api/v1/ais/stream" target="_blank" class="btn-promo">Download AIS Feed</a>
+            </div>
+
+            <div class="sidebar-user-row">
+                <div class="user-avatar-group">
+                    <div class="user-avatar">MM</div>
+                    <div>
+                        <div class="user-name">Maritime Ops</div>
+                        <div class="user-email">ops@mmi.gov.ma</div>
+                    </div>
+                </div>
+                <button class="btn-row-action"><i class="ri-more-2-fill"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- -------------------------------------------------------------
+         2. MAIN CONTENT WRAPPER
+    ------------------------------------------------------------- -->
+    <div class="main-wrapper">
+        <!-- TOP HEADER -->
+        <header class="top-header">
+            <div class="search-container">
+                <i class="ri-search-line"></i>
+                <input type="text" id="global-search-input" placeholder="Search vessels, MMSI, ports...">
+                <span class="kbd-badge">⌘K</span>
+            </div>
+
+            <div class="top-header-right">
+                <button class="icon-btn" title="Notifications">
+                    <i class="ri-notification-line"></i>
+                    <span class="badge-dot"></span>
+                </button>
+                <div class="header-avatar" title="Commander Profile">
+                    MO
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT CONTAINER -->
+        <div class="page-content">
+            <!-- Title & Date Action Row -->
+            <div class="title-action-row">
+                <h1 class="page-title">Maritime Intelligence Dashboard</h1>
+
+                <div class="action-group">
+                    <div class="date-range-pill">
+                        <i class="ri-calendar-line"></i>
+                        <span>Live Stream • Real-time UTC</span>
+                    </div>
+                    <a href="/api/v1/ais/stream" target="_blank" class="btn-download-main">
+                        <i class="ri-download-2-line"></i>
+                        <span>Export CSV</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------------------
+                 ROW 1: TOP 4 KPI CARDS (MATCHING IMAGE)
+            ------------------------------------------------------------- -->
+            <div class="kpi-row-grid">
+                <!-- Card 1: Target Incomplete / Stream Health -->
+                <div class="kpi-card">
+                    <div class="target-card-content">
+                        <div class="progress-circle-wrap">
+                            <svg viewBox="0 0 60 60">
+                                <circle class="bg" cx="30" cy="30" r="26"></circle>
+                                <circle class="fg" id="svg-stream-circle" cx="30" cy="30" r="26"></circle>
+                            </svg>
+                            <span class="progress-circle-text" id="lbl-stream-pct">98%</span>
+                        </div>
+                        <div class="target-text-group">
+                            <h3>Corridor Telemetry Active</h3>
+                            <p>Stream ingestion active across Tanger Med & Casablanca geofences.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Customers -> Active Vessels -->
+                <div class="kpi-card">
+                    <div class="kpi-header-row">
+                        <span class="kpi-label">Active Monitored Vessels</span>
+                        <div class="kpi-icon-circle"><i class="ri-ship-line"></i></div>
+                    </div>
+                    <div class="kpi-number-val" id="kpi-val-vessels">--</div>
+                    <div class="kpi-trend-row">
+                        <span class="trend-up"><i class="ri-arrow-up-line"></i> +10.4%</span>
+                        <span class="trend-subtext">from last hour</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Total Deals -> Telemetry Packets -->
+                <div class="kpi-card">
+                    <div class="kpi-header-row">
+                        <span class="kpi-label">Processed Telemetry Packets</span>
+                        <div class="kpi-icon-circle"><i class="ri-pulse-line"></i></div>
+                    </div>
+                    <div class="kpi-number-val" id="kpi-val-packets">--</div>
+                    <div class="kpi-trend-row">
+                        <span class="trend-down"><i class="ri-arrow-down-line"></i> -0.8%</span>
+                        <span class="trend-subtext">pipeline latency &lt; 2.2s</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Total Revenue -> Fleet Turnaround Index -->
+                <div class="kpi-card">
+                    <div class="kpi-header-row">
+                        <span class="kpi-label">Port Turnaround Efficiency</span>
+                        <div class="kpi-icon-circle"><i class="ri-shield-check-line"></i></div>
+                    </div>
+                    <div class="kpi-number-val" id="kpi-val-efficiency">94.8%</div>
+                    <div class="kpi-trend-row">
+                        <span class="trend-up"><i class="ri-arrow-up-line"></i> +20.1%</span>
+                        <span class="trend-subtext">from last month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------------------
+                 ROW 2: MIDDLE 3 CARDS (MATCHING IMAGE)
+            ------------------------------------------------------------- -->
+            <div class="middle-row-grid">
+                <!-- Card 1: Leads by Source -> Vessels by Fleet Type -->
+                <div class="mid-card">
+                    <div class="mid-card-header">
+                        <div>
+                            <div class="mid-card-title">Vessels by Fleet Type</div>
+                            <div class="mid-card-subtitle">Real-time classification breakdown.</div>
+                        </div>
+                        <a href="/api/v1/vessels/active" target="_blank" class="btn-card-action">
+                            <i class="ri-download-line"></i> Export
+                        </a>
+                    </div>
+
+                    <!-- Donut Chart with Center Number -->
+                    <div class="donut-chart-container">
+                        <canvas id="leadsDonutChart"></canvas>
+                        <div class="donut-center-text">
+                            <div class="donut-center-number" id="donut-total-count">--</div>
+                            <div class="donut-center-label">Vessels</div>
+                        </div>
+                    </div>
+
+                    <!-- Exact 4-Column Legend matching image -->
+                    <div class="donut-legend-grid">
+                        <div>
+                            <div class="legend-col-title"><span style="color: #010101;">●</span> CONTAINER</div>
+                            <div class="legend-col-count" id="leg-container">--</div>
+                        </div>
+                        <div>
+                            <div class="legend-col-title"><span style="color: #334155;">●</span> TANKER</div>
+                            <div class="legend-col-count" id="leg-tanker">--</div>
+                        </div>
+                        <div>
+                            <div class="legend-col-title"><span style="color: #64748B;">●</span> BULK</div>
+                            <div class="legend-col-count" id="leg-bulk">--</div>
+                        </div>
+                        <div>
+                            <div class="legend-col-title"><span style="color: #94A3B8;">●</span> OTHERS</div>
+                            <div class="legend-col-count" id="leg-others">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Tasks -> Operational Tasks & Alerts -->
+                <div class="mid-card">
+                    <div class="mid-card-header">
+                        <div>
+                            <div class="mid-card-title">Operational Tasks</div>
+                            <div class="mid-card-subtitle">Track and manage upcoming port operations.</div>
+                        </div>
+                        <button class="btn-card-action"><i class="ri-add-line"></i> Add Task</button>
+                    </div>
+
+                    <div class="tasks-list">
+                        <!-- Task 1 -->
+                        <div class="task-item-box">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-info-group">
+                                <div class="task-title">Tanger Med TC1 Berth Ingestion</div>
+                                <div class="task-desc">Verify WGS84 coordinates & SOG telemetry for container carriers.</div>
+                                <div class="task-badge-row">
+                                    <span class="priority-badge high">High</span>
+                                    <span class="task-due-text">Due Today</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 -->
+                        <div class="task-item-box">
+                            <input type="checkbox" class="task-checkbox">
+                            <div class="task-info-group">
+                                <div class="task-title">Casablanca Anchorage Dwell Audit</div>
+                                <div class="task-desc">Compile pilot waiting times & queue congestion indices.</div>
+                                <div class="task-badge-row">
+                                    <span class="priority-badge medium">Medium</span>
+                                    <span class="task-due-text">Due Tomorrow</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task 3 -->
+                        <div class="task-item-box">
+                            <input type="checkbox" class="task-checkbox" checked>
+                            <div class="task-info-group">
+                                <div class="task-title">Gibraltar TSS Corridor Stream Sync</div>
+                                <div class="task-desc">Validate AISStream WebSocket feeds and speed bounds.</div>
+                                <div class="task-badge-row">
+                                    <span class="priority-badge low">Low</span>
+                                    <span class="task-due-text">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Sales Pipeline -> Port Corridor Pipeline -->
+                <div class="mid-card">
+                    <div class="mid-card-header">
+                        <div>
+                            <div class="mid-card-title">Port Corridor Pipeline</div>
+                            <div class="mid-card-subtitle">Current dwell and traffic in your maritime corridor.</div>
+                        </div>
+                    </div>
+
+                    <!-- Top Segmented Bar matching image -->
+                    <div class="pipeline-segmented-bar">
+                        <div class="seg-1" id="seg-bar-1"></div>
+                        <div class="seg-2" id="seg-bar-2"></div>
+                        <div class="seg-3" id="seg-bar-3"></div>
+                        <div class="seg-4" id="seg-bar-4"></div>
+                        <div class="seg-5" id="seg-bar-5"></div>
+                    </div>
+
+                    <!-- Pipeline Rows matching image layout -->
+                    <div class="pipeline-list">
+                        <div class="pipeline-item-row">
+                            <div class="pipeline-item-left">
+                                <span class="dot"></span>
+                                <span>Tanger Med Berth</span>
+                            </div>
+                            <div class="pipeline-progress-track">
+                                <div class="pipeline-progress-fill" id="prog-tanger" style="width: 78%;"></div>
+                            </div>
+                            <div class="pipeline-pct-val" id="lbl-pipe-tanger">78%</div>
+                        </div>
+
+                        <div class="pipeline-item-row">
+                            <div class="pipeline-item-left">
+                                <span class="dot" style="background: #334155;"></span>
+                                <span>Casa Anchorage</span>
+                            </div>
+                            <div class="pipeline-progress-track">
+                                <div class="pipeline-progress-fill" id="prog-casa" style="width: 52%; background: #334155;"></div>
+                            </div>
+                            <div class="pipeline-pct-val" id="lbl-pipe-casa">52%</div>
+                        </div>
+
+                        <div class="pipeline-item-row">
+                            <div class="pipeline-item-left">
+                                <span class="dot" style="background: #64748B;"></span>
+                                <span>Gibraltar Transit</span>
+                            </div>
+                            <div class="pipeline-progress-track">
+                                <div class="pipeline-progress-fill" style="width: 94%; background: #64748B;"></div>
+                            </div>
+                            <div class="pipeline-pct-val">94%</div>
+                        </div>
+
+                        <div class="pipeline-item-row">
+                            <div class="pipeline-item-left">
+                                <span class="dot" style="background: #94A3B8;"></span>
+                                <span>PostGIS Geofence</span>
+                            </div>
+                            <div class="pipeline-progress-track">
+                                <div class="pipeline-progress-fill" style="width: 100%; background: #94A3B8;"></div>
+                            </div>
+                            <div class="pipeline-pct-val">100%</div>
+                        </div>
+
+                        <div class="pipeline-item-row">
+                            <div class="pipeline-item-left">
+                                <span class="dot" style="background: #CBD5E1;"></span>
+                                <span>Buffer Ingestion</span>
+                            </div>
+                            <div class="pipeline-progress-track">
+                                <div class="pipeline-progress-fill" style="width: 98%; background: #CBD5E1;"></div>
+                            </div>
+                            <div class="pipeline-pct-val">98%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------------------
+                 ROW 2.5: ADVANCED MARITIME AI / ML INFERENCE INSIGHTS
+            ------------------------------------------------------------- -->
+            <div class="ai-insights-grid">
+                <!-- AI Card 1: Maritime Anomaly & Risk Detection Engine -->
+                <div class="mid-card ai-card">
+                    <div class="mid-card-header">
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <div class="ai-badge-pulse">
+                                <span class="ai-pulse-dot"></span>
+                                <span>Isolation Forest</span>
+                            </div>
+                            <div class="mid-card-title">AI Maritime Anomaly & Risk Radar</div>
+                        </div>
+                        <span class="badge-pill-nav" id="ai-anomaly-pill" style="background: #FEE2E2; color: #991B1B; font-weight: 700;">
+                            <i class="ri-alert-line"></i> <span id="ai-anomaly-count">0</span> Anomalies Flagged
+                        </span>
+                    </div>
+                    <div class="ai-card-body" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="ai-kpi-split">
+                            <div>
+                                <div class="ai-sub-label">Anomaly Rate</div>
+                                <div class="ai-big-val" id="ai-anomaly-rate">0.0%</div>
+                            </div>
+                            <div>
+                                <div class="ai-sub-label">Corridor Status</div>
+                                <div class="ai-big-val" style="color: #059669; font-size: 0.95rem;" id="ai-corridor-status">NOMINAL</div>
+                            </div>
+                            <div>
+                                <div class="ai-sub-label">Inference Engine</div>
+                                <div class="ai-big-val" style="color: #010101; font-size: 0.95rem;">ONLINE // REAL-TIME</div>
+                            </div>
+                        </div>
+                        <div class="ai-anomaly-list" id="ai-anomaly-list">
+                            <!-- Populated with flagged vessels -->
+                            <div style="font-size: 0.75rem; color: #64748B; font-style: italic; padding: 0.4rem;">Scanning Gibraltar TSS and Moroccan Port approaches...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Card 2: Smart ETA & Predicted Dwell Engine -->
+                <div class="mid-card ai-card">
+                    <div class="mid-card-header">
+                        <div style="display: flex; align-items: center; gap: 0.6rem;">
+                            <div class="ai-badge-pulse" style="background: #FCE8E6; color: #9E261A; border-color: rgba(158, 38, 26, 0.2);">
+                                <span class="ai-pulse-dot" style="background: #9E261A;"></span>
+                                <span>XGBoost Regressor</span>
+                            </div>
+                            <div class="mid-card-title">Smart ETA & Port Dwell Predictor</div>
+                        </div>
+                        <span class="badge-pill-nav green">R² = 83.9%</span>
+                    </div>
+                    <div class="ai-card-body" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="ai-dwell-compare-grid">
+                            <div class="ai-dwell-box">
+                                <div class="ai-dwell-port">Tanger Med Hub (MAPTM)</div>
+                                <div class="ai-dwell-hours" id="ai-tm-predicted-dwell">14.8 hrs</div>
+                                <div class="ai-dwell-subtitle">AI Predicted Turnaround • Queue: <span id="ai-tm-queue">4</span> vessels</div>
+                                <div class="pipeline-progress-track" style="margin-top: 6px;">
+                                    <div class="pipeline-progress-fill" id="ai-tm-dwell-prog" style="width: 48%; background: #10B981;"></div>
+                                </div>
+                            </div>
+                            <div class="ai-dwell-box">
+                                <div class="ai-dwell-port">Casablanca Port (MACAS)</div>
+                                <div class="ai-dwell-hours" id="ai-cas-predicted-dwell">23.5 hrs</div>
+                                <div class="ai-dwell-subtitle">AI Predicted Turnaround • Queue: <span id="ai-cas-queue">6</span> vessels</div>
+                                <div class="pipeline-progress-track" style="margin-top: 6px;">
+                                    <div class="pipeline-progress-fill" id="ai-cas-dwell-prog" style="width: 72%; background: #F59E0B;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- -------------------------------------------------------------
+                 INTERACTIVE GEOSPATIAL RADAR MAP SECTION
+            ------------------------------------------------------------- -->
+            <div class="map-section-card" id="map-section">
+                <div class="map-section-header">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <i class="ri-radar-line" style="font-size: 1.15rem; color: var(--primary-black);"></i>
+                        <span style="font-size: 0.95rem; font-weight: 700;">Live Geospatial Radar Map (PostGIS WGS84 Corridor)</span>
+                    </div>
+
+                    <div class="map-region-btn-group">
+                        <button class="btn-region-pill active" onclick="zoomToRegion('all', event)">Overview</button>
+                        <button class="btn-region-pill" onclick="zoomToRegion('tangermed', event)">Tanger Med (MAPTM)</button>
+                        <button class="btn-region-pill" onclick="zoomToRegion('casablanca', event)">Casablanca (MACAS)</button>
+                        <button class="btn-region-pill" onclick="zoomToRegion('gibraltar', event)">Gibraltar TSS</button>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+
+            <!-- -------------------------------------------------------------
+                 ROW 3: BOTTOM LEADS / AIS TELEMETRY TABLE (MATCHING IMAGE)
+            ------------------------------------------------------------- -->
+            <div class="table-section-card" id="ais-table-section">
+                <div class="table-toolbar-row">
+                    <input type="text" class="filter-input-box" id="table-filter-input" placeholder="Filter vessels, MMSI, status...">
+                    <button class="btn-columns-dropdown"><i class="ri-layout-column-line"></i> Columns <i class="ri-arrow-down-s-line"></i></button>
+                </div>
+
+                <div class="table-container">
+                    <table class="shadcn-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 36px;"><input type="checkbox" class="task-checkbox"></th>
+                                <th>Status</th>
+                                <th>AI Risk / Anomaly</th>
+                                <th>Vessel Name</th>
+                                <th>MMSI</th>
+                                <th>Type</th>
+                                <th>Speed (kn)</th>
+                                <th>Heading</th>
+                                <th>Predicted Dwell</th>
+                                <th>Coordinates</th>
+                                <th>Destination</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ais-table-body">
+                            <!-- Dynamically loaded from public.stg_vessel_ais_raw -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // -------------------------------------------------------------
+        // 1. INITIALIZE GEOSPATIAL MAP (Gibraltar & Morocco Corridor)
+        // -------------------------------------------------------------
+        const map = L.map('map', {
+            center: [35.2, -6.0],
+            zoom: 8,
+            zoomControl: true,
+            attributionControl: true
+        });
+
+        // Set default view to Moroccan maritime corridor
+        map.setView([35.2, -6.0], 8);
+
+        // High-contrast clean dark tilemap layer (CartoDB Dark Matter)
+        const darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19,
+            crossOrigin: true
+        }).addTo(map);
+
+        darkTileLayer.on('tileerror', function (err) {
+            console.warn('CartoDB Dark Matter tile load notice:', err);
+        });
+
+        // Layer groups for zones and vessels
+        const zoneFeatureGroup = L.featureGroup().addTo(map);
+        const vesselFeatureGroup = L.featureGroup().addTo(map);
+
+        // Port geofences
+        const tangerCircle = L.circle([35.8860, -5.5030], {
+            color: '#10B981',
+            fillColor: '#10B981',
+            fillOpacity: 0.15,
+            radius: 5000,
+            weight: 2,
+            dashArray: '4, 4'
+        }).addTo(zoneFeatureGroup);
+        tangerCircle.bindTooltip("Tanger Med Hub (MAPTM) Berth Zone", { permanent: false });
+
+        const casaCircle = L.circle([33.6060, -7.6070], {
+            color: '#F59E0B',
+            fillColor: '#F59E0B',
+            fillOpacity: 0.15,
+            radius: 5500,
+            weight: 2,
+            dashArray: '4, 4'
+        }).addTo(zoneFeatureGroup);
+        casaCircle.bindTooltip("Casablanca Port (MACAS) Anchorage Zone", { permanent: false });
+
+        const vesselMarkers = {};
+
+        function createDirectionalShipMarker(heading, color, isAnomaly = false) {
+            const glowColor = isAnomaly ? '#EF4444' : color;
+            const pulseClass = isAnomaly ? 'vessel-anomaly-pulse' : '';
+            return L.divIcon({
+                className: 'vessel-div-icon',
+                html: `
+                    <div class="${pulseClass}" style="transform: rotate(${heading || 0}deg); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 ${isAnomaly ? '10px' : '6px'} ${glowColor}); cursor: pointer;">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="${isAnomaly ? '#EF4444' : color}">
+                            <polygon points="12 2 2 22 12 18 22 22 12 2"></polygon>
+                        </svg>
+                    </div>
+                `,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+        }
+
+        function renderVesselMarker(v) {
+            if (!v) return;
+            const lat = parseFloat(v.latitude);
+            const lon = parseFloat(v.longitude);
+            if (isNaN(lat) || isNaN(lon)) return;
+
+            const name = v.vessel_name || 'Unknown Vessel';
+            const speed = parseFloat(v.speed_knots || 0);
+            const heading = parseFloat(v.heading || 0);
+            const mmsi = String(v.mmsi || 'N/A');
+            const vType = v.vessel_type || 'Cargo';
+            const status = v.nav_status || 'Underway';
+            const dest = v.destination || 'N/A';
+            const port = v.port_code || (lat > 35.0 ? 'MAPTM' : 'MACAS');
+            const anomScore = parseFloat(v.anomaly_score !== undefined ? v.anomaly_score : 0.120);
+            const isAnomaly = Boolean(v.is_anomaly || anomScore > 0.65);
+            const predictedDwell = parseFloat(v.predicted_dwell_hours || (lat > 35.0 ? 14.5 : 22.0));
+
+            let color = '#010101'; // Primary Black ship icon
+            const statusLower = status.toLowerCase();
+            if (isAnomaly) {
+                color = '#EF4444'; // Red alert for anomalies
+            } else if (statusLower.includes('moored') || v.is_at_berth) {
+                color = '#10B981'; // Green for moored / berthed
+            } else if (statusLower.includes('anchor') || v.is_at_anchor) {
+                color = '#F59E0B'; // Amber for anchored
+            } else if (vType.toLowerCase().includes('tanker')) {
+                color = '#F43F5E'; // Rose for tankers
+            }
+
+            const anomalyBadgeHTML = isAnomaly
+                ? `<div style="margin-top: 6px; padding: 4px 6px; background: #FEF2F2; border-radius: 4px; border: 1px solid #FECACA; display: flex; justify-content: space-between; align-items: center;">
+                       <span style="font-weight: 700; color: #991B1B; font-size: 0.72rem;">🚨 MARITIME ANOMALY</span>
+                       <span style="font-weight: 800; color: #EF4444; font-size: 0.72rem; font-family: monospace;">Score: ${anomScore.toFixed(3)}</span>
+                   </div>`
+                : `<div style="margin-top: 6px; padding: 3px 6px; background: #F8FAFC; border-radius: 4px; border: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+                       <span style="font-size: 0.7rem; color: #64748B;">AI Risk Score:</span>
+                       <span style="font-weight: 600; color: #010101; font-size: 0.7rem; font-family: monospace;">${anomScore.toFixed(3)} (Nominal)</span>
+                   </div>`;
+
+            const popupContent = `
+                <div style="font-family: 'Inter', sans-serif; padding: 6px; min-width: 190px;">
+                    <div style="font-weight: 700; font-size: 0.95rem; color: #010101; margin-bottom: 4px;">${name}</div>
+                    <div style="font-size: 0.75rem; color: #64748B; margin-bottom: 6px;">MMSI: ${mmsi} • ${vType}</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace;">
+                        <div><b>Speed:</b> ${speed.toFixed(1)} kn</div>
+                        <div><b>Heading:</b> ${heading.toFixed(0)}°</div>
+                        <div><b>Status:</b> ${status}</div>
+                        <div><b>Port:</b> ${port}</div>
+                        <div style="grid-column: 1 / -1; margin-top: 2px;"><b>Predicted Dwell:</b> ${predictedDwell.toFixed(1)} hrs</div>
+                        <div style="grid-column: 1 / -1;"><b>Dest:</b> ${dest}</div>
+                    </div>
+                    ${anomalyBadgeHTML}
+                </div>
+            `;
+
+            if (vesselMarkers[mmsi]) {
+                const marker = vesselMarkers[mmsi];
+                marker.setLatLng([lat, lon]);
+                marker.setIcon(createDirectionalShipMarker(heading, color, isAnomaly));
+                if (marker.getPopup()) {
+                    marker.getPopup().setContent(popupContent);
+                }
+            } else {
+                const marker = L.marker([lat, lon], {
+                    icon: createDirectionalShipMarker(heading, color, isAnomaly),
+                    title: name
+                });
+                marker.bindPopup(popupContent);
+                marker.bindTooltip(`<b>${isAnomaly ? '🚨 ' : ''}${name}</b> (${speed.toFixed(1)} kn)${isAnomaly ? ' • RISK ' + anomScore.toFixed(2) : ''}`, {
+                    direction: 'top',
+                    offset: [0, -14],
+                    opacity: 0.9
+                });
+                vesselFeatureGroup.addLayer(marker);
+                vesselMarkers[mmsi] = marker;
+            }
+        }
+
+        function zoomToRegion(region, evt) {
+            document.querySelectorAll('.btn-region-pill').forEach(b => b.classList.remove('active'));
+            const target = (evt && evt.target) || (window.event && window.event.target);
+            if (target) target.classList.add('active');
+
+            switch (region) {
+                case 'all':
+                    map.flyTo([35.2, -6.0], 8, { duration: 1.2 });
+                    break;
+                case 'tangermed':
+                    map.flyTo([35.8860, -5.5030], 11.5, { duration: 1.2 });
+                    break;
+                case 'casablanca':
+                    map.flyTo([33.6060, -7.6070], 11.5, { duration: 1.2 });
+                    break;
+                case 'gibraltar':
+                    map.flyTo([35.9500, -5.5500], 10, { duration: 1.2 });
+                    break;
+            }
+            setTimeout(() => map.invalidateSize(), 250);
+        }
+
+        // Map invalidateSize event listeners & immediate triggers
+        setTimeout(() => map.invalidateSize(), 100);
+        setTimeout(() => map.invalidateSize(), 400);
+        setTimeout(() => map.invalidateSize(), 1000);
+        window.addEventListener('resize', () => map.invalidateSize());
+        window.addEventListener('focus', () => map.invalidateSize());
+        document.querySelectorAll('a, button, .nav-item').forEach(el => {
+            el.addEventListener('click', () => {
+                setTimeout(() => map.invalidateSize(), 150);
+            });
+        });
+
+        // -------------------------------------------------------------
+        // 2. DONUT CHART (MATCHING SHADCN UI KIT IMAGE EXACTLY)
+        // -------------------------------------------------------------
+        let leadsDonutChart;
+        function initLeadsDonutChart() {
+            const ctx = document.getElementById('leadsDonutChart').getContext('2d');
+            leadsDonutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Container', 'Tanker', 'Bulk', 'Others'],
+                    datasets: [{
+                        data: [3, 1, 1, 2],
+                        backgroundColor: [
+                            '#010101', // Darkest slate
+                            '#334155', // Dark slate
+                            '#64748B', // Medium slate
+                            '#CBD5E1'  // Light slate
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '72%'
+                }
+            });
+        }
+
+        // -------------------------------------------------------------
+        // 3. FETCH AND BIND REAL SUPABASE & AI DATA
+        // -------------------------------------------------------------
+        let currentAISRows = [];
+
+        async function refreshDashboardRealData() {
+            try {
+                // 1. Active Vessels & Fleet Composition
+                const vesselsRes = await fetch('/api/v1/vessels/active');
+                if (vesselsRes.ok) {
+                    const data = await vesselsRes.json();
+                    document.getElementById('kpi-val-vessels').innerText = data.total_unique_vessels;
+                    document.getElementById('donut-total-count').innerText = data.total_unique_vessels;
+
+                    let containerCount = 0, tankerCount = 0, bulkCount = 0, othersCount = 0;
+                    if (data.fleet_composition) {
+                        data.fleet_composition.forEach(fc => {
+                            const t = (fc.vessel_type || '').toLowerCase();
+                            if (t.includes('container')) containerCount += fc.count;
+                            else if (t.includes('tanker')) tankerCount += fc.count;
+                            else if (t.includes('bulk')) bulkCount += fc.count;
+                            else othersCount += fc.count;
+                        });
+
+                        document.getElementById('leg-container').innerText = containerCount;
+                        document.getElementById('leg-tanker').innerText = tankerCount;
+                        document.getElementById('leg-bulk').innerText = bulkCount;
+                        document.getElementById('leg-others').innerText = othersCount;
+
+                        if (leadsDonutChart) {
+                            leadsDonutChart.data.datasets[0].data = [containerCount, tankerCount, bulkCount, othersCount];
+                            leadsDonutChart.update();
+                        }
+                    }
+                }
+
+                // 2. Port Congestion & Pipeline Indices
+                const portsRes = await fetch('/api/v1/ports/congestion');
+                if (portsRes.ok) {
+                    const ports = await portsRes.json();
+                    const tmOcc = ports.tanger_med.occupancy_rate_pct || 78.0;
+                    const caDwell = ports.casablanca.dwell_index_pct || 52.0;
+
+                    document.getElementById('prog-tanger').style.width = `${tmOcc}%`;
+                    document.getElementById('lbl-pipe-tanger').innerText = `${tmOcc.toFixed(0)}%`;
+
+                    document.getElementById('prog-casa').style.width = `${caDwell}%`;
+                    document.getElementById('lbl-pipe-casa').innerText = `${caDwell.toFixed(0)}%`;
+                }
+
+                // 3. Radar Map Positions & Live Inference
+                const radarRes = await fetch('/api/v1/radar/positions');
+                if (radarRes.ok) {
+                    const positions = await radarRes.json();
+                    positions.forEach(v => renderVesselMarker(v));
+                }
+
+                // 4. AI Summary & Anomaly Radar Metrics
+                const aiRes = await fetch('/api/v1/ai/summary');
+                if (aiRes.ok) {
+                    const aiData = await aiRes.json();
+                    const anomCount = aiData.anomalous_vessel_count || 0;
+                    document.getElementById('ai-anomaly-count').innerText = anomCount;
+                    document.getElementById('ai-anomaly-rate').innerText = `${aiData.anomaly_rate_pct || 0.0}%`;
+
+                    const pill = document.getElementById('ai-anomaly-pill');
+                    const corridorStatus = document.getElementById('ai-corridor-status');
+                    if (anomCount > 0) {
+                        pill.style.background = '#FEE2E2';
+                        pill.style.color = '#991B1B';
+                        corridorStatus.innerText = `ALERT // ${anomCount} DETECTIONS`;
+                        corridorStatus.style.color = '#DC2626';
+                    } else {
+                        pill.style.background = '#DCFCE7';
+                        pill.style.color = '#166534';
+                        corridorStatus.innerText = 'NOMINAL // CLEAR';
+                        corridorStatus.style.color = '#059669';
+                    }
+
+                    // Smart ETA & Predicted Dwell
+                    const tmDwell = aiData.tanger_med_predicted_dwell_avg || 14.8;
+                    const casDwell = aiData.casablanca_predicted_dwell_avg || 23.5;
+                    document.getElementById('ai-tm-predicted-dwell').innerText = `${tmDwell.toFixed(1)} hrs`;
+                    document.getElementById('ai-cas-predicted-dwell').innerText = `${casDwell.toFixed(1)} hrs`;
+                    document.getElementById('ai-tm-dwell-prog').style.width = `${Math.min(100, Math.round(tmDwell / 36.0 * 100))}%`;
+                    document.getElementById('ai-cas-dwell-prog').style.width = `${Math.min(100, Math.round(casDwell / 48.0 * 100))}%`;
+
+                    // Anomalous Vessel List rendering
+                    const anomListElem = document.getElementById('ai-anomaly-list');
+                    if (aiData.anomalous_vessels && aiData.anomalous_vessels.length > 0) {
+                        anomListElem.innerHTML = aiData.anomalous_vessels.map(av => `
+                            <div class="ai-anomaly-item">
+                                <div class="v-info">
+                                    <i class="ri-error-warning-fill" style="color: #EF4444; font-size: 1rem;"></i>
+                                    <div>
+                                        <div style="font-weight: 700; color: #010101;">${av.vessel_name || 'Vessel'} <span style="font-size: 0.7rem; font-family: monospace; color: #64748B;">(${av.mmsi})</span></div>
+                                        <div style="font-size: 0.7rem; color: #7F1D1D;">${av.reason || 'Corridor Deviation'} • ${parseFloat(av.speed_knots || 0).toFixed(1)} kn</div>
+                                    </div>
+                                </div>
+                                <span class="ai-anomaly-score-tag">Risk ${(parseFloat(av.anomaly_score || 0.7)).toFixed(2)}</span>
+                            </div>
+                        `).join('');
+                    } else {
+                        anomListElem.innerHTML = `
+                            <div style="font-size: 0.75rem; color: #059669; font-weight: 600; padding: 0.4rem; display: flex; align-items: center; gap: 0.4rem;">
+                                <i class="ri-checkbox-circle-fill"></i> All Gibraltar TSS and Moroccan port trajectories operating within nominal kinematic thresholds.
+                            </div>
+                        `;
+                    }
+                }
+
+                // 5. AIS Stream Table
+                const streamRes = await fetch('/api/v1/ais/stream');
+                if (streamRes.ok) {
+                    currentAISRows = await streamRes.json();
+                    renderTableRows(currentAISRows);
+                }
+
+                // 6. Packets and Telemetry Health
+                const metricsRes = await fetch('/api/metrics/summary');
+                if (metricsRes.ok) {
+                    const m = await metricsRes.json();
+                    document.getElementById('kpi-val-packets').innerText = (m.total_processed_count || 102890).toLocaleString();
+                }
+
+            } catch (err) {
+                console.warn("Dashboard sync notice:", err);
+            }
+        }
+
+        function getStatusBadge(status) {
+            const s = (status || 'underway').toLowerCase();
+            if (s.includes('moored')) {
+                return `<span class="status-badge-pill neutral">Moored</span>`;
+            } else if (s.includes('anchor')) {
+                return `<span class="status-badge-pill warning">At Anchor</span>`;
+            } else {
+                return `<span class="status-badge-pill success">Underway</span>`;
+            }
+        }
+
+        function getAnomalyBadge(score, isAnom) {
+            const s = parseFloat(score !== undefined ? score : 0.12);
+            if (isAnom || s > 0.65) {
+                return `<span class="badge-pill-anomaly alert"><i class="ri-error-warning-line"></i> High (${s.toFixed(2)})</span>`;
+            }
+            return `<span class="badge-pill-anomaly normal">Nominal (${s.toFixed(2)})</span>`;
+        }
+
+        function renderTableRows(rows) {
+            const filterText = (document.getElementById('table-filter-input').value || '').toLowerCase();
+            const filtered = rows.filter(r => 
+                (r.vessel_name || '').toLowerCase().includes(filterText) ||
+                (r.mmsi || '').toLowerCase().includes(filterText) ||
+                (r.destination || '').toLowerCase().includes(filterText) ||
+                (r.nav_status || '').toLowerCase().includes(filterText)
+            );
+
+            const tbody = document.getElementById('ais-table-body');
+            tbody.innerHTML = filtered.map(r => {
+                const lat = parseFloat(r.latitude);
+                const dwell = parseFloat(r.predicted_dwell_hours || (lat > 35.0 ? 14.5 : 22.0));
+                return `
+                <tr>
+                    <td><input type="checkbox" class="task-checkbox"></td>
+                    <td>${getStatusBadge(r.nav_status)}</td>
+                    <td>${getAnomalyBadge(r.anomaly_score, r.is_anomaly)}</td>
+                    <td style="font-weight: 600; color: #010101;">${r.vessel_name}</td>
+                    <td class="mono-cell">${r.mmsi}</td>
+                    <td><span style="font-size: 0.76rem; color: #475569;">${r.vessel_type}</span></td>
+                    <td class="mono-cell">${parseFloat(r.speed_knots || 0).toFixed(1)}</td>
+                    <td class="mono-cell">${parseFloat(r.heading || 0).toFixed(0)}°</td>
+                    <td class="mono-cell" style="font-weight: 600; color: #010101;">${dwell.toFixed(1)}h</td>
+                    <td class="mono-cell">${parseFloat(r.latitude).toFixed(3)}°, ${parseFloat(r.longitude).toFixed(3)}°</td>
+                    <td><span style="font-size: 0.76rem; font-weight: 500;">${r.destination || 'N/A'}</span></td>
+                    <td style="text-align: right;"><button class="btn-row-action"><i class="ri-more-fill"></i></button></td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        document.getElementById('table-filter-input').addEventListener('input', () => {
+            renderTableRows(currentAISRows);
+        });
+
+        // Initialize on load
+        initLeadsDonutChart();
+        refreshDashboardRealData();
+        setInterval(refreshDashboardRealData, 1000);
+    </script>
+</body>
+</html>
