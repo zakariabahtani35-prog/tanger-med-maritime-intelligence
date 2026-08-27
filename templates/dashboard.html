@@ -8,10 +8,10 @@
     <link rel="alternate icon" type="image/x-icon" href="/assets/favicon.ico">
     <link rel="apple-touch-icon" href="/assets/favicon.png">
 
-    <!-- Fonts: Inter & JetBrains Mono -->
+    <!-- Google Fonts: Orbitron (Sci-Fi Display), Rajdhani (Body), Chakra Petch, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -21,6 +21,27 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* Local Custom Font Support (Ethnocentric & Nasalization Fallbacks) */
+        @font-face {
+            font-family: 'Ethnocentric';
+            src: local('Ethnocentric'), local('Ethnocentric Rg'),
+                 url('/fonts/Ethnocentric.woff2') format('woff2'),
+                 url('/fonts/Ethnocentric.woff') format('woff');
+            font-weight: 400 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Nasalization';
+            src: local('Nasalization'), local('Nasalization Rg'),
+                 url('/fonts/Nasalization.woff2') format('woff2'),
+                 url('/fonts/Nasalization.woff') format('woff');
+            font-weight: 400 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
         :root {
             /* BY BRAND VISUAL IDENTITY TOKENS */
             --bg-body: #FEFEFE;
@@ -46,8 +67,11 @@
             --badge-slate-bg: #F1F4F9;
             --badge-slate-text: #010101;
 
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            /* MODERN SCI-FI & GAMING TYPOGRAPHY SYSTEM */
+            --font-scifi: 'Orbitron', 'Ethnocentric', 'Nasalization', 'Chakra Petch', system-ui, sans-serif;
+            --font-body: 'Rajdhani', 'Orbitron', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Chakra Petch', monospace;
+            --font-main: var(--font-body);
             --radius-card: 12px;
         }
 
@@ -56,6 +80,29 @@
             padding: 0;
             box-sizing: border-box;
             font-family: var(--font-main);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Universal Sci-Fi Display Rules for Headings, Stats, Buttons, Badges */
+        h1, h2, h3, h4, h5, h6,
+        .sidebar-brand-text,
+        .nav-section-title,
+        .card-title,
+        .kpi-title,
+        .stat-value,
+        .kpi-val,
+        .badge-pill-anomaly,
+        .status-badge-pill,
+        .btn-action,
+        .btn-row-action,
+        .table-header th,
+        .hud-label,
+        .ai-anomaly-score-tag {
+            font-family: var(--font-scifi) !important;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
         }
 
         body {
