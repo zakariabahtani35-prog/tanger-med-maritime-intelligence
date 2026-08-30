@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morocco Maritime & Port Intelligence | Tanger Med & Casablanca Hubs</title>
+    <meta name="description" content="High-throughput maritime data intelligence platform providing real-time AIS telemetry, PostGIS spatial geofencing, and port congestion analytics across Tanger Med, Casablanca, and the Strait of Gibraltar.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="./assets/bytecrafters-by.svg">
+    <link rel="alternate icon" type="image/x-icon" href="./assets/favicon.ico">
+    <link rel="apple-touch-icon" href="./assets/favicon.png">
+    
+    <!-- Google Fonts: Orbitron (Sci-Fi Display), Rajdhani (Body), Chakra Petch, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Top Brand Accent Stripe -->
+    <div class="top-orange-stripe" id="top-stripe"></div>
+
+    <!-- Floating Pill Navigation Header -->
+    <header class="floating-header-wrapper" id="site-header">
+        <nav class="nav-capsule" id="nav-capsule">
+            <!-- Brand Logo (BY Identity) -->
+            <a href="#hero" class="brand-logo" id="nav-brand-logo">
+                <div class="brand-glyph">
+                    <img src="./assets/bytecrafters-by.svg" alt="BY Logo" width="32" height="24" style="display: block; object-fit: contain;">
+                </div>
+                <div class="brand-text-wrap">
+                    <span class="brand-title-stacked">MOROCCO<br>MARITIME</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links with '+' indicators -->
+            <div class="nav-links-menu" id="nav-menu">
+                <a href="#hero" class="nav-item-link active"><sup class="tm-mark">TM</sup>HOME <span class="plus-glyph">+</span></a>
+                <a href="#corridors" class="nav-item-link">HUBS <span class="plus-glyph">+</span></a>
+                <a href="#features" class="nav-item-link">FEATURES <span class="plus-glyph">+</span></a>
+                <a href="#architecture" class="nav-item-link">CONTROL <span class="plus-glyph">+</span></a>
+                <a href="#bento" class="nav-item-link">TELEMETRY <span class="plus-glyph">+</span></a>
+                <a href="#faq" class="nav-item-link">FAQ</a>
+            </div>
+
+            <!-- Header Actions: Dark Pill Button + Circle Button -->
+            <div class="nav-actions-group">
+                <a href="/dashboard" class="header-dark-pill" id="nav-launch-btn">
+                    <span>LAUNCH DASHBOARD</span>
+                </a>
+                <a href="/dashboard" class="header-orange-circle" id="nav-cart-btn" aria-label="Quick Access Portal">
+                    <i class="ri-radar-line"></i>
+                </a>
+                <button class="mobile-menu-toggle" id="mobile-toggle-btn" aria-label="Toggle Navigation">
+                    <i class="ri-menu-4-line"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Flow -->
+    <main id="main-content">
+        
+        <!-- =========================================================
+             SECTION 1: HERO CONTAINER (PIXEL-MATRIX STEPPED CUTOUT THEME)
+             ========================================================= -->
+        <section class="hero-section pixel-hero-theme" id="hero">
+            <div class="pixel-hero-card">
+                <!-- Dark Cinematic Backdrop & Overlay -->
+                <div class="hero-backdrop"></div>
+                <div class="pixel-hero-vignette"></div>
+
+                <!-- Scattered Pixel Matrix Grid (Procedural Matrix Blocks) -->
+                <div class="pixel-matrix-overlay" aria-hidden="true">
+                    <span class="px-block px-1"></span>
+                    <span class="px-block px-2"></span>
+                    <span class="px-block px-3"></span>
+                    <span class="px-block px-4"></span>
+                    <span class="px-block px-5"></span>
+                    <span class="px-block px-6"></span>
+                    <span class="px-block px-7"></span>
+                    <span class="px-block px-8"></span>
+                    <span class="px-block px-9"></span>
+                    <span class="px-block px-10"></span>
+                    <span class="px-block px-11"></span>
+                    <span class="px-block px-12"></span>
+                    <span class="px-block px-13"></span>
+                    <span class="px-block px-14"></span>
+                    <span class="px-block px-15"></span>
+                    <span class="px-block px-16"></span>
+                    <span class="px-block px-17"></span>
+                    <span class="px-block px-18"></span>
+                    <span class="px-block px-19"></span>
+                    <span class="px-block px-20"></span>
+                </div>
+
+                <!-- Top-Left Stepped Pixel Cutout Panel -->
+                <div class="pixel-card-topleft">
+                    <h1 class="pixel-hero-title">
+                        WORLD-CLASS<br>
+                        SOLUTIONS FOR YOUR<br>
+                        MARITIME CORRIDOR<br>
+                        <span class="text-highlight-red">JOURNEY.</span>
+                    </h1>
+                    <div class="pixel-hero-level">
+                        <i class="ri-arrow-up-line"></i> TANGER MED HUB
+                    </div>
+                </div>
+
+                <!-- Bottom-Right Stepped Pixel Cutout Panel -->
+                <div class="pixel-card-bottomright">
+                    <div class="pixel-hero-cta-group">
+                        <a href="/dashboard" class="btn btn-pixel-primary" id="hero-primary-cta">
+                            <span>LAUNCH LIVE ANALYTICS</span>
+                            <i class="ri-arrow-right-line"></i>
+                        </a>
+                        <a href="#features" class="btn btn-pixel-secondary" id="hero-secondary-cta">
+                            <span>EXPLORE CORRIDORS</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 2: MISSION / INTRO STATEMENT
+             ========================================================= -->
+        <section class="intro-section" id="corridors">
+            <div class="container intro-grid">
+                <div class="intro-text-col">
+                    <span class="section-subtitle">OUR MISSION</span>
+                    <h2 class="intro-heading">
+                        Morocco Maritime was built to find a 
+                        <span class="text-highlight">
+                            precision
+                            <svg class="hand-underline" viewBox="0 0 160 16" fill="none" preserveAspectRatio="none">
+                                <path d="M3 12C45 4 115 3 157 11" stroke="#9E261A" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
+                        </span> 
+                        in your <span class="scifi-highlight">daily</span> port supply chain 
+                        <span class="text-highlight">
+                            routines
+                            <svg class="hand-underline" viewBox="0 0 160 16" fill="none" preserveAspectRatio="none">
+                                <path d="M4 11C48 5 110 4 156 12" stroke="#9E261A" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                    </h2>
+                    <p class="intro-desc">
+                        Harness sub-second AIS stream ingestion, continuous PostGIS polygon detection, and automated dwell prediction to coordinate berth operations, anchorages, and maritime logistics with zero friction.
+                    </p>
+                </div>
+
+                <div class="intro-media-col">
+                    <div class="intro-image-card">
+                        <img src="./assets/port_tangermed.jpg" alt="Tanger Med Port Container Terminal" class="media-cover">
+                        <span class="image-pill-tag">TANGER MED HUB</span>
+                    </div>
+                    <div class="intro-image-card">
+                        <img src="./assets/port_casablanca.jpg" alt="Casablanca Commercial Port" class="media-cover">
+                        <span class="image-pill-tag">CASABLANCA HUB</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 3: 3-COLUMN FEATURE CARDS
+             ========================================================= -->
+        <section class="features-section" id="features">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-subtitle">FEATURES &amp; DETAILS</span>
+                    <h2 class="section-title">
+                        <span class="text-highlight">
+                            Everything
+                            <svg class="hand-underline" viewBox="0 0 180 16" fill="none" preserveAspectRatio="none">
+                                <path d="M4 12C50 4 130 4 176 12" stroke="#9E261A" stroke-width="4.5" stroke-linecap="round"/>
+                            </svg>
+                        </span> 
+                        you need, in one <span class="scifi-highlight">service</span>
+                    </h2>
+                </div>
+
+                <div class="feature-cards-grid">
+                    <!-- Feature Card 1 -->
+                    <div class="feature-card">
+                        <div class="feature-card-media">
+                            <img src="./assets/feature_ais_ingestion.jpg" alt="High-Frequency AIS Stream Ingestion Data Telemetry" class="media-cover">
+                        </div>
+                        <div class="feature-card-body">
+                            <span class="feature-tag">INSTANT INGESTION</span>
+                            <h3 class="feature-title">Unlock possibilities</h3>
+                            <p class="feature-text">
+                                High-frequency vessel stream processing with strict WGS84 validation, async ingestion queue buffer, and real-time packet parsing under 5 seconds.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Feature Card 2 -->
+                    <div class="feature-card">
+                        <div class="feature-card-media">
+                            <img src="./assets/feature_spatial_geofencing.jpg" alt="Strait of Gibraltar GIS Spatial Geofencing Navigation Map" class="media-cover">
+                        </div>
+                        <div class="feature-card-body">
+                            <span class="feature-tag">SPATIAL GEOFENCING</span>
+                            <h3 class="feature-title">Precision at fingertips</h3>
+                            <p class="feature-text">
+                                100% PostGIS polygon coverage across Tanger Med 1 &amp; 2, Casablanca Port Approach, and the Gibraltar Strait Traffic Separation Scheme.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Feature Card 3 -->
+                    <div class="feature-card">
+                        <div class="feature-card-media">
+                            <img src="./assets/feature_berth_analytics.jpg" alt="Container Terminal Berth Dwell Analytics and Gantry Cranes" class="media-cover">
+                        </div>
+                        <div class="feature-card-body">
+                            <span class="feature-tag">CONTINUOUS CONTROL</span>
+                            <h3 class="feature-title">Freedom to innovate</h3>
+                            <p class="feature-text">
+                                Automated berth dwell modeling, anchorage bottleneck tracking, and predictive turnaround analytics tailored for harbor authorities and terminal operators.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 4: LEADER / EDITORIAL SHOWCASE
+             ========================================================= -->
+        <section class="leader-section" id="architecture">
+            <div class="container leader-grid">
+                <div class="leader-media-wrap">
+                    <div class="leader-image-card">
+                        <img src="./assets/leader_harbor_master.jpg" alt="Tanger Med Maritime Terminal Control & Operations" class="media-cover">
+                        <div class="doodle-heart-sparkle">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9E261A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="leader-text-wrap">
+                    <span class="section-subtitle">POWERFUL FOR HARBOR MASTERS</span>
+                    <h2 class="leader-title">
+                        Enjoy <span class="scifi-highlight">complete</span>
+                        <br>
+                        <span class="text-highlight">
+                            freedom
+                            <svg class="hand-underline" viewBox="0 0 160 16" fill="none" preserveAspectRatio="none">
+                                <path d="M4 11C44 5 110 4 156 12" stroke="#9E261A" stroke-width="4.5" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                    </h2>
+                    <p class="leader-desc">
+                        Unify all vessel traffic, berth occupancy rates, anchorage dwell times, and supply chain telemetry into a single, high-fidelity command interface. Eliminate blind spots across the Strait of Gibraltar and the Atlantic Moroccan approach with sub-second live map updates.
+                    </p>
+                    <a href="/dashboard" class="btn btn-primary btn-pill btn-lg" id="leader-cta-btn">
+                        <span>Get started</span>
+                        <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 5: BRAND DARK SHOWCASE BANNER
+             ========================================================= -->
+        <section class="orange-banner-section" id="team-banner">
+            <div class="container-fluid">
+                <div class="orange-banner-card">
+                    <div class="orange-banner-header">
+                        <div class="orange-title-col">
+                            <h2 class="orange-heading">
+                                Platform 
+                                <span class="text-highlight-white">
+                                    made
+                                    <svg class="hand-underline-white" viewBox="0 0 120 16" fill="none" preserveAspectRatio="none">
+                                        <path d="M4 11C32 5 84 4 116 11" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+                                    </svg>
+                                </span>
+                                <br>
+                                <span class="scifi-highlight-white">for geniuses</span>
+                            </h2>
+                        </div>
+                        <div class="orange-desc-col">
+                            <p class="orange-desc-text">
+                                Engineered by senior maritime data engineers and GIS specialists. Processing over 10,000+ real-time AIS telemetry packets per minute with asynchronous PostgreSQL buffer ingestion, zero data loss, and sub-5 second end-to-end corridor latency.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 4 Rounded Photo Cards -->
+                    <div class="orange-gallery-grid">
+                        <div class="orange-gallery-item">
+                            <img src="./assets/gallery_vessel_ops.jpg" alt="Container Ship Marine Corridor Navigation" class="media-cover">
+                        </div>
+                        <div class="orange-gallery-item">
+                            <img src="./assets/gallery_command_center.jpg" alt="AIS Real-Time Ship Tracking HUD Telemetry" class="media-cover">
+                        </div>
+                        <div class="orange-gallery-item">
+                            <img src="./assets/gallery_gis_geofence.jpg" alt="Casablanca Atlantic Commercial Port Terminal" class="media-cover">
+                        </div>
+                        <div class="orange-gallery-item">
+                            <img src="./assets/gallery_port_collaboration.jpg" alt="Commercial Port Container Logistics Operations" class="media-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 6: OUR CORE PILLARS (4 Minimalist Cards)
+             ========================================================= -->
+        <section class="pillars-section" id="pillars">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-subtitle">WHAT DRIVES US</span>
+                    <h2 class="section-title">
+                        Our 
+                        <span class="text-highlight">
+                            core
+                            <svg class="hand-underline" viewBox="0 0 100 16" fill="none" preserveAspectRatio="none">
+                                <path d="M3 11C28 4 72 4 97 12" stroke="#9E261A" stroke-width="4.5" stroke-linecap="round"/>
+                            </svg>
+                        </span> 
+                        <span class="scifi-highlight">pillars</span>
+                    </h2>
+                </div>
+
+                <div class="pillars-grid">
+                    <!-- Pillar 1 -->
+                    <div class="pillar-card">
+                        <div class="pillar-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9E261A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                        <h3 class="pillar-title">Scalability first</h3>
+                        <p class="pillar-text">
+                            Asynchronous bulk queuing buffer capable of processing high-volume packet bursts from hundreds of vessels concurrently.
+                        </p>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="pillar-card">
+                        <div class="pillar-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9E261A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </div>
+                        <h3 class="pillar-title">Real-time edge</h3>
+                        <p class="pillar-text">
+                            High-frequency WebSocket broadcasting delivering instant vessel kinematics, speed over ground, and true heading vectors.
+                        </p>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="pillar-card">
+                        <div class="pillar-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9E261A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <h3 class="pillar-title">Spatial precision</h3>
+                        <p class="pillar-text">
+                            Strict WGS84 coordinate boundary validation with automated PostGIS polygon entry and exit triggers.
+                        </p>
+                    </div>
+
+                    <!-- Pillar 4 -->
+                    <div class="pillar-card">
+                        <div class="pillar-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9E261A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </div>
+                        <h3 class="pillar-title">Resilience</h3>
+                        <p class="pillar-text">
+                            Fail-safe ingestion engine with automated fallback simulator and continuous health telemetry.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 7: DUAL BENTO PROMO CARDS
+             ========================================================= -->
+        <section class="bento-section" id="bento">
+            <div class="container bento-grid">
+                <!-- Bento Card 1: Brand Black/Dark -->
+                <div class="bento-card bento-card-orange">
+                    <div class="bento-card-header">
+                        <span class="bento-subtitle-white">FINE-TUNE GEOFENCING</span>
+                        <h3 class="bento-title-white">
+                            Fine-tune every detail to 
+                            <span class="text-highlight-white">
+                                perfection.
+                                <svg class="hand-underline-white" viewBox="0 0 160 16" fill="none" preserveAspectRatio="none">
+                                    <path d="M3 11C45 5 115 4 157 11" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                        </h3>
+                    </div>
+                    <div class="bento-doodle-container">
+                        <!-- Laptop & Radar doodle SVG -->
+                        <svg class="bento-svg-white" viewBox="0 0 300 180" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="50" y="30" width="200" height="110" rx="8"></rect>
+                            <line x1="20" y1="140" x2="280" y2="140"></line>
+                            <path d="M20 140l20 18h220l20-18"></path>
+                            <!-- Screen lines / polygon -->
+                            <polygon points="100 50 150 70 140 110 80 90"></polygon>
+                            <circle cx="150" cy="85" r="40" stroke-dasharray="4 4"></circle>
+                            <circle cx="150" cy="85" r="2"></circle>
+                            <line x1="150" y1="85" x2="180" y2="60"></line>
+                        </svg>
+                    </div>
+                    <div class="bento-card-footer">
+                        <a href="/dashboard" class="btn btn-white-pill" id="bento-orange-cta">
+                            <span>Get started</span>
+                            <i class="ri-arrow-right-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bento Card 2: Clean Light Surface -->
+                <div class="bento-card bento-card-light">
+                    <div class="bento-card-header">
+                        <span class="bento-subtitle-dark">OPEN DATA APIS</span>
+                        <h3 class="bento-title-dark">
+                            Control gives you the liberty to 
+                            <span class="text-highlight">
+                                experiment.
+                                <svg class="hand-underline" viewBox="0 0 180 16" fill="none" preserveAspectRatio="none">
+                                    <path d="M4 11C50 4 130 4 176 11" stroke="#9E261A" stroke-width="4.5" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                        </h3>
+                    </div>
+                    <div class="bento-doodle-container">
+                        <!-- Shooting star doodle SVG -->
+                        <svg class="bento-svg-dark" viewBox="0 0 300 180" fill="none" stroke="#010101" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="100 80 108 100 130 102 114 118 119 140 100 128 81 140 86 118 70 102 92 100"></polygon>
+                            <path d="M130 100 C 180 110, 240 130, 270 170"></path>
+                            <path d="M120 120 C 170 130, 220 150, 250 180"></path>
+                            <path d="M100 135 C 150 145, 200 160, 230 185"></path>
+                        </svg>
+                    </div>
+                    <div class="bento-card-footer">
+                        <a href="/api/v1/vessels/active" target="_blank" class="btn btn-dark-pill" id="bento-light-cta">
+                            <span>Get started</span>
+                            <i class="ri-arrow-right-line"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SECTION 8: FAQ ACCORDION ("You ask, we answer")
+             ========================================================= -->
+        <section class="faq-section" id="faq">
+            <div class="container faq-grid">
+                <div class="faq-title-col">
+                    <h2 class="faq-heading">
+                        You <span class="scifi-highlight">ask,</span>
+                        <br>
+                        we 
+                        <span class="text-highlight">
+                            answer
+                            <svg class="hand-underline" viewBox="0 0 160 16" fill="none" preserveAspectRatio="none">
+                                <path d="M4 11C45 5 112 4 156 12" stroke="#9E261A" stroke-width="4.5" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                    </h2>
+                </div>
+
+                <div class="faq-accordion-col">
+                    <div class="accordion-item" id="faq-1">
+                        <button class="accordion-trigger" aria-expanded="false">
+                            <span class="accordion-question">Why choose Morocco Maritime?</span>
+                            <span class="accordion-icon"><i class="ri-add-line"></i></span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>
+                                It is the only unified intelligence platform purpose-built for the North-Western Moroccan maritime corridor, combining live AISStream feeds, PostGIS geofencing for Tanger Med 1, Tanger Med 2, Casablanca, and automated dwell analysis.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="faq-2">
+                        <button class="accordion-trigger" aria-expanded="false">
+                            <span class="accordion-question">Can I integrate my platform?</span>
+                            <span class="accordion-icon"><i class="ri-add-line"></i></span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>
+                                Yes. The platform provides full REST APIs for live telemetry, port metrics, and geofences, alongside high-frequency WebSocket endpoints (`/ws/telemetry`) that plug directly into external TOS and supply chain systems.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="faq-3">
+                        <button class="accordion-trigger" aria-expanded="false">
+                            <span class="accordion-question">How fast does the data stream?</span>
+                            <span class="accordion-icon"><i class="ri-add-line"></i></span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>
+                                AIS telemetry is processed asynchronously in bulk queues with end-to-end pipeline latency under 5 seconds, giving operators true real-time visibility over vessel headings, speed, and status.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="faq-4">
+                        <button class="accordion-trigger" aria-expanded="false">
+                            <span class="accordion-question">Do you offer live support?</span>
+                            <span class="accordion-icon"><i class="ri-add-line"></i></span>
+                        </button>
+                        <div class="accordion-content">
+                            <p>
+                                Dedicated 24/7 technical monitoring is provided for port authorities, terminal concessionaires, and shipping lines with automated health telemetry and fail-safe fallback simulators.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================================================
+         FOOTER SECTION
+         ========================================================= -->
+    <footer class="site-footer" id="footer">
+        <div class="container footer-top">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <img src="./assets/bytecrafters-by.svg" alt="BY Logo" width="28" height="20" style="display: block; object-fit: contain;">
+                    <span>MOROCCO MARITIME</span>
+                </div>
+                <p class="footer-newsletter-text">Join our maritime intelligence brief</p>
+                
+                <form class="newsletter-form" id="newsletter-form" onsubmit="event.preventDefault(); handleNewsletter();">
+                    <input type="email" placeholder="Sign up to newsletter" class="newsletter-input" required id="newsletter-email">
+                    <button type="submit" class="newsletter-btn" aria-label="Subscribe">
+                        <i class="ri-arrow-right-line"></i>
+                    </button>
+                </form>
+                <div class="newsletter-success" id="newsletter-success" style="display: none;">
+                    ✓ Thank you for subscribing!
+                </div>
+
+                <div class="footer-socials">
+                    <a href="https://www.linkedin.com/in/zakaria-bahtani-b64251390/" target="_blank" rel="noopener noreferrer" class="social-circle" aria-label="LinkedIn"><i class="ri-linkedin-fill"></i></a>
+                    <a href="https://github.com/zakariabahtani35-prog/tanger-med-maritime-intelligence" target="_blank" rel="noopener noreferrer" class="social-circle" aria-label="GitHub"><i class="ri-github-fill"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links-grid">
+                <div class="footer-col">
+                    <h4 class="footer-col-title">PRODUCT</h4>
+                    <ul class="footer-list">
+                        <li><a href="#features">AIS Ingestion</a></li>
+                        <li><a href="#architecture">PostGIS Spatial</a></li>
+                        <li><a href="#pillars">Dwell Modeling</a></li>
+                        <li><a href="#corridors">Berth Analytics</a></li>
+                        <li><a href="#faq">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-col-title">COMPANY</h4>
+                    <ul class="footer-list">
+                        <li><a href="#corridors">About Us</a></li>
+                        <li><a href="#architecture">Corridors</a></li>
+                        <li><a href="/dashboard">Live Portal</a></li>
+                        <li><a href="#team-banner">Engineering</a></li>
+                        <li><a href="#architecture">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-col-title">RESOURCES</h4>
+                    <ul class="footer-list">
+                        <li><a href="/api/v1/vessels/active" target="_blank">Active Vessels API</a></li>
+                        <li><a href="/api/v1/ports/congestion" target="_blank">Congestion Index API</a></li>
+                        <li><a href="/api/v1/radar/positions" target="_blank">Radar Feed API</a></li>
+                        <li><a href="/dashboard">Gibraltar VTS</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Morocco Maritime &amp; Port Intelligence Platform. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#faq">Privacy Policy</a>
+                <span>•</span>
+                <a href="#faq">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Bundle -->
+    <script src="script.js"></script>
+</body>
+
+</html>
